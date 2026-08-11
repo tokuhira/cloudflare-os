@@ -1199,6 +1199,25 @@ export const SUGGESTED_MODELS: Record<
       name: "DeepSeek V4 Pro 0813 (Workers AI)", contextWindow: 1048576,
       outputLimit: WORKERS_AI_OUTPUT_LIMIT,
     },
+    // literate-gadget 用の追加。`kimi-k2.7-code` と `glm-5.2` は Workers **Paid** でないと
+    // 呼べず、無料プランでは "not available on the Workers Free plan" で 403 になる
+    // （2026-08-11 に実測）。**`deepseek-v4-pro-0813` は上流が後から足したもので、
+    // 無料プランで通るかは試していない。**
+    // 以下は無料プランで通ることを確認した中から、推論あり・文脈の広いものを選んである。
+    // 目的は費用の回避だけではない。どの程度のモデルから「散文を読んでエージェントに
+    // 変更を依頼する」が成立するのかを測りたい（literate-gadget HANDOFF.md §1, §2.19）。
+    "@cf/openai/gpt-oss-120b": {
+      name: "GPT-OSS 120B (Workers AI, free plan)", contextWindow: 128000,
+      outputLimit: WORKERS_AI_OUTPUT_LIMIT,
+    },
+    "@cf/nvidia/nemotron-3-120b-a12b": {
+      name: "Nemotron 3 120B (Workers AI, free plan)", contextWindow: 256000,
+      outputLimit: WORKERS_AI_OUTPUT_LIMIT,
+    },
+    "@cf/zai-org/glm-4.7-flash": {
+      name: "GLM 4.7 Flash (Workers AI, free plan)", contextWindow: 131072,
+      outputLimit: WORKERS_AI_OUTPUT_LIMIT,
+    },
   },
   "anthropic": {
     // TODO: Include Fable -- but we need an admin option to disable it, since many orgs don't
