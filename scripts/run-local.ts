@@ -38,8 +38,13 @@ function runPnpm(args: string[]): void {
 }
 
 runPnpm(["install"]);
-runPnpm(["exec", "vp", "run", "--cache", "@gadgets/typed-storage#build"]);
-runPnpm(["exec", "vp", "run", "--cache", "@gadgets/workshop-frontend#build:assets"]);
+// literate-gadget: `--cache` を `--no-cache` にしてある。Vite+ のタスクキャッシュを
+// 有効にすると、この環境（WSL2）では esbuild / tsc のバイナリを spawn できず
+// `process.execve failed with error code EBUSY` で落ちる。run-dev-server.ts と同じ理由で、
+// 2026-08-16 に切り分けた（literate-gadget HANDOFF.md §2.24）。
+// #373 がこの 2 行を新設したので、同じ手当てをこちらにも当てている（§2.36）。
+runPnpm(["exec", "vp", "run", "--no-cache", "@gadgets/typed-storage#build"]);
+runPnpm(["exec", "vp", "run", "--no-cache", "@gadgets/workshop-frontend#build:assets"]);
 
 // ---------------------------------------------------------------------------
 // Launch the local server (serves the built frontend as static assets).

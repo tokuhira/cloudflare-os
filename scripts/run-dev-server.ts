@@ -270,10 +270,15 @@ try {
       [join(WORKSHOP_BACKEND_DIR, "scripts", "build-format-blueprints.mjs")],
       WORKSHOP_BACKEND_DIR,
     ),
+    // literate-gadget: `--cache` を `--no-cache` にしてある。Vite+ のタスクキャッシュを
+    // 有効にすると、この環境（WSL2）では esbuild のバイナリを spawn できず
+    // `Error: spawn EBUSY` でビルドが落ちる。2026-08-16 に切り分けた——単体の
+    // `vite build` は通り、`--concurrency-limit 1` でも落ち、`--no-cache` だけが効いた。
+    // キャッシュを失うぶん起動は遅くなるが、起動しないよりはよい。
     runBuild("configurator UIs",
-        ...pnpmCommand(["exec", "vp", "run", "-r", "--cache", "build:configurator", "--dev"]), ROOT),
+        ...pnpmCommand(["exec", "vp", "run", "-r", "--no-cache", "build:configurator", "--dev"]), ROOT),
     runBuild("gatekeeper app UIs",
-        ...pnpmCommand(["exec", "vp", "run", "-r", "--cache", "build:app:dev"]), ROOT),
+        ...pnpmCommand(["exec", "vp", "run", "-r", "--no-cache", "build:app:dev"]), ROOT),
   ]);
 } catch (err) {
   // The SIGTERM handler killing the builds also lands here, as the rejection of whichever build
